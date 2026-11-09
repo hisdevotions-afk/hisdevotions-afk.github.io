@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Roberto Quirino · AI Engineer</title>
-<meta name="description" content="Atlas, a live geographic intelligence map, and an enrollment CRM with LLMs in the loop. Designed, built and run from scratch by Roberto Quirino.">
+<meta name="description" content="Atlas, a geographic intelligence engine, and an enrollment CRM with LLMs in the loop. Designed, built and run from scratch by Roberto Quirino.">
 <meta property="og:title" content="Roberto Quirino · AI Engineer">
 <meta property="og:description" content="Two systems I designed, built and run: Atlas (live map) and an LLM-assisted CRM.">
 <meta property="og:image" content="https://hisdevotions-afk.github.io/img/atlas-brazil.jpg">
@@ -13,21 +13,26 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 :root {
-  --bg: #0b1019; --surface: #121a27; --ink: #e9edf3; --muted: #97a1b2; --line: #222d3f;
-  --on-accent: #1a0c04; --accent: #f07a45; --accent-2: #ffc35a; --chip: #1a2333; --ok: #39c47e;
+  --bg: #0b1019; --surface: #121a27; --surface-2: #0e1520; --ink: #e9edf3; --muted: #97a1b2; --line: #222d3f;
+  --on-accent: #1a0c04; --accent: #f07a45; --accent-2: #ffc35a; --chip: #1a2333; --ok: #39c47e; --warn: #f5b942; --bad: #ef6b5b;
+  --hex-cold: #1c2534; --hex-edge: #0b1019; --heat-a: #ffd166; --heat-b: #f07a45; --heat-c: #c2362b;
+  --bubble-in: #1a2333; --bubble-out: #3a2416;
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-  --ease: cubic-bezier(.2,.7,.2,1);
+  --ease: cubic-bezier(.16,1,.3,1);
   color-scheme: dark;
 }
 @media (prefers-color-scheme: light) {
-  :root { --bg: #f5f6f8; --surface: #fff; --ink: #131923; --muted: #5a6374; --line: #dce0e7;
-    --on-accent: #fff; --accent: #b8430f; --accent-2: #e09a1a; --chip: #eceff3; --ok: #17703f; color-scheme: light; }
+  :root { --bg: #f5f6f8; --surface: #fff; --surface-2: #f0f2f5; --ink: #131923; --muted: #566072; --line: #dce0e7;
+    --on-accent: #fff; --accent: #b8430f; --accent-2: #e09a1a; --chip: #eceff3; --ok: #17703f; --warn: #8a5a00; --bad: #b42318;
+    --hex-cold: #e3e7ed; --hex-edge: #ffffff; --heat-a: #ffcf5c; --heat-b: #f0763d; --heat-c: #b8301f;
+    --bubble-in: #eceff3; --bubble-out: #fde6d8; color-scheme: light; }
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.65 var(--body); -webkit-font-smoothing: antialiased; }
+::selection { background: var(--accent); color: var(--on-accent); }
 img { max-width: 100%; display: block; }
 a { color: var(--accent); text-underline-offset: 3px; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
@@ -35,15 +40,17 @@ a { color: var(--accent); text-underline-offset: 3px; }
 .wrap { max-width: 1120px; margin: 0 auto; }
 h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.08; text-wrap: balance; }
 p { margin: 0; max-width: 66ch; }
-.label { font: 500 12px/1.4 var(--mono); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.small { font: 500 12px/1.4 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+button { font: inherit; color: inherit; }
 
 /* progress + nav */
-.progress { position: fixed; inset: 0 0 auto; height: 2px; z-index: 60; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transform-origin: 0 50%; transform: scaleX(0); }
-nav.top { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); background: color-mix(in srgb, var(--bg) 78%, transparent); border-bottom: 1px solid transparent; transition: border-color .3s; }
+.progress { position: fixed; inset: 0 0 auto; height: 2px; z-index: 60; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); }
+nav.top { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); background: color-mix(in srgb, var(--bg) 80%, transparent); border-bottom: 1px solid transparent; transition: border-color .3s; }
 nav.top.scrolled { border-bottom-color: var(--line); }
 nav.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
 .brand { font: 700 18px var(--display); color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
 .brand i { width: 22px; height: 22px; display: inline-block; background: var(--accent); clip-path: polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0 50%); }
+.brand small { font: 500 13px var(--body); color: var(--muted); }
 .navlinks { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
 .navlinks a { display: block; padding: 8px 12px; border-radius: 8px; color: var(--muted); text-decoration: none; font-weight: 500; font-size: 15px; transition: color .2s, background .2s; }
 .navlinks a:hover { color: var(--ink); }
@@ -53,46 +60,133 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
 #hex { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .55; }
 .hero::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 90% at 20% 40%, transparent, var(--bg) 85%); pointer-events: none; }
-.hero .wrap { position: relative; z-index: 1; padding-block: 96px 88px; display: grid; gap: 22px; }
+.hero .wrap { position: relative; z-index: 1; padding-block: 104px 96px; display: grid; gap: 22px; }
 .hero h1 { font-size: clamp(2.6rem, 7vw, 5rem); font-weight: 800; letter-spacing: -.03em; max-width: 14ch; }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .hero .lede { font-size: clamp(1.05rem, 2vw, 1.2rem); color: var(--muted); }
 .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-.btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 10px; font: 600 15px/1 var(--body); text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); transition: transform .25s var(--ease), border-color .25s, box-shadow .25s; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 10px; font: 600 15px/1 var(--body); text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); transition: transform .25s var(--ease), border-color .25s; }
 .btn:hover { transform: translateY(-2px); border-color: var(--accent); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--on-accent); position: relative; }
 .pulse::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--on-accent); animation: ping 1.8s var(--ease) infinite; }
 @keyframes ping { from { transform: scale(.6); opacity: .9 } to { transform: scale(1.8); opacity: 0 } }
-.hero .facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 18px; }
-.hero .facts div { display: grid; }
-.hero .facts b { font: 700 1.7rem/1.1 var(--display); font-variant-numeric: tabular-nums; }
-.hero .facts span { font-size: 13px; color: var(--muted); }
 
-/* projects */
-section.project { padding-block: 96px 24px; }
+/* project sections */
+section.project { padding-block: 104px 16px; }
 section.project .wrap { display: grid; gap: 32px; }
 .phead { display: grid; gap: 14px; }
-.phead .meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
-.status { font: 500 12px/1 var(--mono); padding: 6px 10px; border-radius: 999px; background: var(--chip); color: var(--muted); }
+.phead h2 { font-size: clamp(2rem, 4.4vw, 3rem); font-weight: 800; letter-spacing: -.02em; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.status { font: 500 12px/1 var(--mono); padding: 7px 10px; border-radius: 999px; background: var(--chip); color: var(--muted); letter-spacing: 0; }
 .status.live { color: var(--ok); }
-.phead h2 { font-size: clamp(2rem, 4.4vw, 3rem); font-weight: 800; letter-spacing: -.02em; }
-.phead p { color: color-mix(in srgb, var(--ink) 82%, var(--muted)); }
+.phead p { color: color-mix(in srgb, var(--ink) 84%, var(--muted)); }
 
-.gallery { display: grid; gap: 14px; }
-.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
-.tabs button { font: 500 14px var(--body); color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; cursor: pointer; transition: all .2s; }
-.tabs button[aria-selected="true"] { color: var(--ink); background: var(--chip); border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
-.stage { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); aspect-ratio: 1460 / 812; cursor: zoom-in; }
-.stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; opacity: 0; transform: scale(1.02); transition: opacity .6s var(--ease), transform 1.2s var(--ease); }
-.stage img.on { opacity: 1; transform: scale(1); }
-.stage .cap { position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 10px 14px; border-radius: 10px; font-size: 14px; color: #e9edf3; background: rgba(10,14,22,.78); backdrop-filter: blur(6px); max-width: 60ch; }
-.stage .bar { position: absolute; left: 0; top: 0; height: 3px; background: var(--accent); width: 0; }
-.stage.playing .bar { animation: fill 6s linear forwards; }
-@keyframes fill { to { width: 100% } }
+/* mock frame shared */
+.mock { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow: hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); }
+.mock-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.mock-bar .dots { display: flex; gap: 6px; }
+.mock-bar .dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.mock-bar .note { font: 400 12px var(--mono); color: var(--muted); }
+.mock-cap { font-size: 13px; color: var(--muted); margin-top: 10px; }
 
+/* ---------- Atlas mock ---------- */
+.atlas { display: grid; grid-template-columns: 290px 1fr; min-height: 520px; }
+.atlas-side { border-right: 1px solid var(--line); padding: 16px; display: grid; gap: 14px; align-content: start; background: var(--surface-2); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; padding: 3px; border-radius: 10px; background: var(--chip); position: relative; }
+.seg button { position: relative; z-index: 1; border: 0; background: transparent; padding: 8px 6px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: color .25s; }
+.seg button[aria-pressed="true"] { color: var(--ink); }
+.seg .thumb { position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); border-radius: 8px; background: var(--surface); box-shadow: 0 2px 6px rgba(0,0,0,.18); transition: transform .45s var(--ease); }
+.seg[data-mode="corp"] .thumb { transform: translateX(100%); }
+.rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.rank li { display: grid; grid-template-columns: 20px 1fr auto; gap: 2px 8px; align-items: center; padding: 8px 8px; border-radius: 9px; cursor: pointer; transition: background .2s; }
+.rank li:hover { background: var(--chip); }
+.rank li.sel { background: color-mix(in srgb, var(--accent) 14%, var(--surface-2)); }
+.rank .n { font: 500 12px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.rank .nm { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank .v { font: 600 14px var(--display); font-variant-numeric: tabular-nums; }
+.rank .track { grid-column: 2 / 4; height: 3px; border-radius: 3px; background: var(--chip); overflow: hidden; }
+.rank .track b { display: block; height: 100%; background: linear-gradient(90deg, var(--heat-a), var(--heat-b), var(--heat-c)); transform-origin: 0 50%; transition: transform .7s var(--ease); }
+.atlas-map { position: relative; min-width: 0; background: var(--surface-2); }
+.atlas-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; }
+.legend { position: absolute; left: 14px; top: 14px; padding: 10px 12px; border-radius: 10px; background: color-mix(in srgb, var(--surface) 88%, transparent); border: 1px solid var(--line); font-size: 12px; color: var(--muted); max-width: 220px; }
+.legend b { display: block; color: var(--ink); font-size: 12.5px; margin-bottom: 6px; }
+.legend .ramp { height: 6px; border-radius: 4px; background: linear-gradient(90deg, var(--heat-a), var(--heat-b), var(--heat-c)); margin-bottom: 6px; }
+.tip { position: absolute; pointer-events: none; padding: 6px 9px; border-radius: 8px; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 600; white-space: nowrap; transform: translate(-50%, calc(-100% - 12px)); opacity: 0; transition: opacity .15s; }
+.tip.on { opacity: 1; }
+.ficha { position: absolute; right: 14px; bottom: 14px; width: min(330px, calc(100% - 28px)); padding: 14px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 16px 40px -18px rgba(0,0,0,.5); display: grid; gap: 10px; clip-path: inset(0 0 0 0 round 12px); transition: clip-path .6s var(--ease), opacity .4s; }
+.ficha.hide { clip-path: inset(100% 0 0 0 round 12px); opacity: 0; }
+.ficha .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ficha h3 { font-size: 1.15rem; }
+.ficha .score { font: 800 1.7rem/1 var(--display); color: var(--accent); font-variant-numeric: tabular-nums; }
+.ficha dl { margin: 0; display: grid; gap: 6px; }
+.ficha .row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: baseline; font-size: 13px; }
+.ficha dt { color: var(--muted); }
+.ficha dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; display: flex; gap: 6px; align-items: baseline; }
+.tag { font: 500 10.5px/1 var(--mono); padding: 3px 5px; border-radius: 4px; background: var(--chip); color: var(--muted); }
+.tag.fact { color: var(--ok); }
+.tag.est { color: var(--warn); }
+.ficha .withheld { font-size: 12.5px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 8px; }
+.ficha .withheld s { color: var(--muted); }
+
+/* ---------- CRM mock ---------- */
+.crm { display: grid; grid-template-columns: 1fr 340px; min-height: 470px; }
+.board { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 10px; padding: 14px; overflow-x: auto; background: var(--surface-2); min-width: 0; }
+.col { display: grid; grid-template-rows: auto 1fr; gap: 8px; min-width: 0; }
+.col h4 { margin: 0; display: flex; justify-content: space-between; align-items: center; font: 600 12.5px var(--body); padding: 7px 10px; border-radius: 8px; background: var(--chip); }
+.col h4 span { font: 500 12px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.stack { display: flex; flex-direction: column; gap: 8px; align-content: start; }
+.lead { padding: 10px 11px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); display: grid; gap: 4px; font-size: 13px; transition: border-color .3s, box-shadow .3s; }
+.lead .row1 { display: flex; justify-content: space-between; gap: 6px; align-items: center; }
+.lead b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lead .sc { font: 600 11.5px var(--mono); padding: 3px 6px; border-radius: 6px; background: var(--chip); font-variant-numeric: tabular-nums; }
+.lead .sc.hot { color: var(--accent); }
+.lead .sub { color: var(--muted); font-size: 12px; }
+.lead .src { justify-self: start; font: 500 10.5px var(--mono); padding: 3px 6px; border-radius: 5px; background: var(--chip); color: var(--muted); }
+.lead.active { border-color: var(--accent); box-shadow: 0 10px 24px -14px var(--accent); }
+.lead.reading::after { content: "AI reading…"; font: 500 10.5px var(--mono); color: var(--accent); }
+.lead.ghost { opacity: .45; }
+
+.ai { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto 1fr auto; min-width: 0; position: relative; }
+.ai-head { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.ai-head b { font-size: 14px; }
+.chat { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; min-height: 200px; justify-content: flex-end; }
+.msg { max-width: 86%; padding: 8px 11px; border-radius: 12px; font-size: 13px; line-height: 1.45; background: var(--bubble-in); align-self: flex-start; animation: msgIn .45s var(--ease) both; }
+.msg.out { background: var(--bubble-out); align-self: flex-end; }
+.msg mark { background: color-mix(in srgb, var(--accent) 30%, transparent); color: inherit; border-radius: 3px; padding: 0 2px; transition: background .4s; }
+.typing { display: inline-flex; gap: 4px; padding: 10px 12px; }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: dot 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .15s } .typing i:nth-child(3) { animation-delay: .3s }
+@keyframes dot { 0%,80%,100% { opacity: .3; transform: none } 40% { opacity: 1; transform: translateY(-3px) } }
+@keyframes msgIn { from { opacity: 0; transform: translateY(10px) scale(.98); filter: blur(3px) } to { opacity: 1; transform: none; filter: none } }
+.extract { border-top: 1px solid var(--line); padding: 12px 14px; display: grid; gap: 7px; background: var(--surface-2); }
+.extract .ttl { display: flex; justify-content: space-between; align-items: center; }
+.ring { width: 46px; height: 46px; position: relative; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 4; }
+.ring .bg { stroke: var(--chip); }
+.ring .fg { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 113.1; stroke-dashoffset: 113.1; transition: stroke-dashoffset 1s var(--ease), stroke .3s; }
+.ring span { position: absolute; inset: 0; display: grid; place-items: center; font: 700 13px var(--display); font-variant-numeric: tabular-nums; }
+.fields { display: grid; gap: 5px; }
+.field { display: grid; grid-template-columns: 92px 1fr; gap: 8px; font-size: 12.5px; align-items: baseline; opacity: .35; transition: opacity .3s; }
+.field.on { opacity: 1; }
+.field dt { color: var(--muted); }
+.field dd { margin: 0; font-weight: 600; min-height: 1.2em; }
+.field.null dd { color: var(--muted); font-weight: 400; }
+.field.null dd s { text-decoration-color: var(--bad); }
+.verdict { font: 600 12px var(--mono); padding: 6px 9px; border-radius: 7px; background: var(--chip); justify-self: start; opacity: 0; transform: translateY(4px); transition: opacity .35s, transform .35s var(--ease); }
+.verdict.on { opacity: 1; transform: none; }
+.verdict.sql { color: var(--ok); }
+.verdict.nq { color: var(--warn); }
+.toast { position: absolute; left: 14px; right: 14px; top: 56px; padding: 11px 13px; border-radius: 11px; background: var(--ink); color: var(--bg); font-size: 13px; display: grid; gap: 2px; box-shadow: 0 18px 40px -16px rgba(0,0,0,.6); transform: translateY(-14px); opacity: 0; transition: transform .5s var(--ease), opacity .35s; pointer-events: none; }
+.toast.on { transform: none; opacity: 1; }
+.toast small { font: 500 11px var(--mono); letter-spacing: .05em; text-transform: uppercase; opacity: .7; }
+.replay { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
+.replay:hover { border-color: var(--accent); }
+
+/* sheet */
 .sheet { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px 48px; }
 .sheet > div { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.sheet h3 { font: 600 15px var(--body); color: var(--muted); }
 .sheet ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
 .sheet li::marker { color: var(--accent); }
 .figures { display: flex; flex-wrap: wrap; gap: 10px 32px; }
@@ -100,8 +194,7 @@ section.project .wrap { display: grid; gap: 32px; }
 .figures b { font: 700 1.9rem/1.1 var(--display); font-variant-numeric: tabular-nums; }
 .figures span { font-size: 13px; color: var(--muted); }
 .tech { display: flex; flex-wrap: wrap; gap: 6px; }
-.tech span { font: 400 12.5px/1 var(--mono); padding: 7px 9px; border-radius: 6px; background: var(--chip); transition: transform .2s var(--ease), background .2s; }
-.tech span:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--accent) 22%, var(--chip)); }
+.tech span { font: 400 12.5px/1 var(--mono); padding: 7px 9px; border-radius: 6px; background: var(--chip); }
 
 .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .card { display: grid; gap: 8px; padding: 22px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-decoration: none; transition: transform .3s var(--ease), border-color .3s; min-width: 0; }
@@ -110,39 +203,34 @@ section.project .wrap { display: grid; gap: 32px; }
 .card p { color: var(--muted); font-size: 15px; }
 .card code { font: 12.5px var(--mono); color: var(--accent); }
 
-footer { margin-top: 96px; border-top: 1px solid var(--line); }
+footer { margin-top: 104px; border-top: 1px solid var(--line); }
 footer .wrap { padding-block: 40px 56px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 14px; }
 footer a { color: var(--ink); }
 
-/* reveal (content stays visible without JS) */
-.js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
-.js .reveal.in { opacity: 1; transform: none; }
 .js .hero .stagger > * { opacity: 0; transform: translateY(16px); animation: rise .9s var(--ease) forwards; }
 .js .hero .stagger > *:nth-child(2) { animation-delay: .08s } .js .hero .stagger > *:nth-child(3) { animation-delay: .16s }
-.js .hero .stagger > *:nth-child(4) { animation-delay: .24s } .js .hero .stagger > *:nth-child(5) { animation-delay: .32s }
 @keyframes rise { to { opacity: 1; transform: none } }
 
-/* lightbox */
-dialog { border: 0; padding: 0; background: transparent; max-width: min(96vw, 1460px); }
-dialog::backdrop { background: rgba(5,8,12,.86); backdrop-filter: blur(4px); }
-dialog img { border-radius: 10px; max-height: 88vh; width: auto; }
-dialog button { position: fixed; top: max(16px, env(safe-area-inset-top)); right: 16px; font: 600 14px var(--body); color: #fff; background: rgba(255,255,255,.12); border: 0; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
-
+@media (max-width: 860px) {
+  .atlas { grid-template-columns: 1fr; }
+  .atlas-map { height: 380px; order: -1; }
+  .atlas-side { border-right: 0; border-top: 1px solid var(--line); }
+  .ficha { position: static; width: auto; margin: 0 14px 14px; }
+  .atlas-map .ficha { display: none; }
+  .crm { grid-template-columns: 1fr; }
+  .ai { border-left: 0; border-top: 1px solid var(--line); }
+  .board { grid-template-columns: repeat(4, 160px); }
+}
 @media (max-width: 760px) {
   .navlinks a { padding: 8px 8px; font-size: 14px; }
-  .navlinks li.hide-sm { display: none; }
-  .brand span { display: none; }
+  .navlinks li.hide-sm, .brand span { display: none; }
   .hero .wrap { padding-block: 64px 56px; }
-  section.project { padding-block: 64px 8px; }
+  section.project { padding-block: 72px 8px; }
   .sheet, .cards { grid-template-columns: 1fr; }
-  .stage .cap { position: static; margin: 0; border-radius: 0; background: var(--surface); color: var(--muted); }
-  .stage { aspect-ratio: auto; }
-  .stage img { position: relative; display: none; }
-  .stage img.on { display: block; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js .reveal, .js .hero .stagger > * { opacity: 1; transform: none; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .js .hero .stagger > * { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
 </style>
@@ -152,7 +240,7 @@ dialog button { position: fixed; top: max(16px, env(safe-area-inset-top)); right
 
 <nav class="top gutter" id="nav" aria-label="Sections">
   <div class="wrap">
-    <a class="brand" href="#top"><i aria-hidden="true"></i><span>Roberto Quirino <small style="font:500 13px var(--body);color:var(--muted)">· AI Engineer, São Paulo</small></span></a>
+    <a class="brand" href="#top"><i aria-hidden="true"></i><span>Roberto Quirino <small>· AI Engineer, São Paulo</small></span></a>
     <ul class="navlinks">
       <li><a href="#atlas">Atlas</a></li>
       <li><a href="#crm">CRM</a></li>
@@ -166,46 +254,51 @@ dialog button { position: fixed; top: max(16px, env(safe-area-inset-top)); right
   <canvas id="hex" aria-hidden="true"></canvas>
   <div class="wrap stagger">
     <h1>Two systems I designed, built <em>and run</em>.</h1>
-    <p class="lede">Both started as problems inside an early-childhood school network with 35 units in São Paulo state, where I moved from growth into engineering. I defined each product, wrote the backend and the interface, and I keep them in operation. One is live; the other runs here on fictional data so it can be shown.</p>
+    <p class="lede">Both started as problems inside an early-childhood school network with 35 units in São Paulo state, where I moved from growth into engineering. I defined each product, wrote the backend and the interface, and I keep them in operation. The demos below run on made-up sample data; the real systems and their data stay private.</p>
     <div class="ctas">
       <a class="btn primary" href="https://atlas-terra.vercel.app" target="_blank" rel="noopener"><span class="pulse" aria-hidden="true"></span>Open the live map</a>
       <a class="btn" href="#crm">See the CRM</a>
       <a class="btn" href="https://github.com/hisdevotions-afk" target="_blank" rel="noopener">GitHub</a>
     </div>
-    <div class="facts">
-      <div><b data-count="5570">5,570</b><span>municipalities mapped</span></div>
-      <div><b data-count="11000" data-suffix="+">11,000+</b><span>leads in the CRM</span></div>
-      <div><b data-count="400" data-suffix="+">400+</b><span>automated tests across projects</span></div>
-    </div>
   </div>
 </header>
 
 <main>
+  <!-- ATLAS -->
   <section class="project gutter" id="atlas">
     <div class="wrap">
-      <div class="phead reveal">
-        <div class="meta"><span class="label">01 · Geographic intelligence</span><span class="status live">● live</span></div>
-        <h2>Atlas: where to open the next unit</h2>
-        <p>Expansion was decided city by city with no shared data. Atlas answers which city and which neighborhood to open in, and every number on screen carries its source and a <i>fact</i> or <i>estimate</i> label. The scoring engine is deterministic, with no LLM in it, and its weights live in versioned YAML. A predictive model (visits, enrollments) only reaches the screen if it passes leave-one-out validation with R² ≥ 0.2; when it fails, the screen shows no prediction.</p>
-        <p>The original runs on the network's private data, so the live link is <b>Atlas Terra</b>: the same engine and interface rebuilt for real-estate development (where to look for land for residential and office buildings), using only public data for all 5,570 Brazilian municipalities.</p>
+      <div class="phead">
+        <h2>Atlas: where to open the next unit <span class="status live">● live version online</span></h2>
+        <p>Expansion was decided city by city with no shared data. Atlas answers which city and which neighborhood to open in, and every number carries its source and a <i>fact</i> or <i>estimate</i> label. The scoring engine is deterministic, with no LLM in it, and its weights live in versioned YAML. A predictive model only reaches the screen if it passes leave-one-out validation with R² ≥ 0.2; when it fails, the screen shows no prediction.</p>
       </div>
 
-      <div class="gallery reveal" data-gallery>
-        <div class="tabs" role="tablist" aria-label="Atlas screens">
-          <button role="tab" aria-selected="true">National view</button>
-          <button role="tab" aria-selected="false">Neighborhood report</button>
+      <div>
+        <div class="mock" id="atlasMock">
+          <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="note">sample city · fictional data</span></div>
+          <div class="atlas">
+            <aside class="atlas-side">
+              <div class="seg" id="seg" data-mode="res" role="group" aria-label="Market">
+                <span class="thumb"></span>
+                <button type="button" aria-pressed="true" data-mode="res">Residential</button>
+                <button type="button" aria-pressed="false" data-mode="corp">Corporate</button>
+              </div>
+              <span class="small" id="rankTitle">Neighborhoods · A/B households</span>
+              <ol class="rank" id="rank"></ol>
+            </aside>
+            <div class="atlas-map" id="atlasMap">
+              <canvas id="atlasCanvas" aria-label="Hexagon heat map of a sample city"></canvas>
+              <div class="legend"><b id="legendTitle">Residential potential</b><div class="ramp"></div>Colored in the top 38% of the city; grey below the cut.</div>
+              <div class="tip" id="tip"></div>
+              <div class="ficha hide" id="ficha" aria-live="polite"></div>
+            </div>
+          </div>
         </div>
-        <div class="stage" tabindex="0" aria-label="Open screenshot full size">
-          <span class="bar"></span>
-          <img class="on" src="img/atlas-brazil.jpg" alt="Dark map of Brazil with states colored by residential potential and a ranked list of states" data-cap="States ranked by A/B-income households, drawn from IBGE Census 2022 polygons.">
-          <img src="img/atlas-city.jpg" alt="Satellite view of Campinas with a neighborhood report" data-cap="Campinas: buyer profile against the city average, then the steps from neighborhood to land parcel." loading="lazy">
-          <p class="cap"></p>
-        </div>
+        <p class="mock-cap">Coded replica of the interface. Hover or tap the map, pick a neighborhood, switch the market. The real version runs on IBGE Census 2022 data for all 5,570 Brazilian municipalities: <a href="https://atlas-terra.vercel.app" target="_blank" rel="noopener">atlas-terra.vercel.app</a>.</p>
       </div>
 
-      <div class="sheet reveal">
+      <div class="sheet">
         <div>
-          <span class="label">What it does</span>
+          <h3>What it does</h3>
           <ul>
             <li>Scores H3 hexagons (about 0.7 km² each) and real IBGE neighborhoods across 1,100+ municipalities in the original</li>
             <li>Crosses Census 2022, the INEP school registry, the existing units with their tuition table, and CRM and visit counts</li>
@@ -215,12 +308,13 @@ dialog button { position: fixed; top: max(16px, env(safe-area-inset-top)); right
           </ul>
         </div>
         <div>
-          <span class="label">Numbers</span>
+          <h3>Numbers</h3>
           <div class="figures">
-            <div><b data-count="91805">91,805</b><span>hexagons scored</span></div>
-            <div><b data-count="69">69</b><span>automated tests</span></div>
+            <div><b>91,805</b><span>hexagons scored</span></div>
+            <div><b>5,570</b><span>municipalities (live version)</span></div>
+            <div><b>69</b><span>automated tests</span></div>
           </div>
-          <span class="label">Stack</span>
+          <h3>Stack</h3>
           <div class="tech"><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>PostGIS</span><span>H3</span><span>OSRM</span><span>Next.js 15</span><span>MapLibre</span><span>Vector tiles</span></div>
           <a class="btn" href="https://github.com/hisdevotions-afk/GeoIntelligence" target="_blank" rel="noopener" style="justify-self:start">Read the case study →</a>
         </div>
@@ -228,47 +322,53 @@ dialog button { position: fixed; top: max(16px, env(safe-area-inset-top)); right
     </div>
   </section>
 
+  <!-- CRM -->
   <section class="project gutter" id="crm">
     <div class="wrap">
-      <div class="phead reveal">
-        <div class="meta"><span class="label">02 · CRM with LLMs in the loop</span><span class="status">demo build · fictional data</span></div>
+      <div class="phead">
         <h2>An enrollment CRM that reads the conversations</h2>
-        <p>I built the CRM from scratch: more than 11,000 leads across 8 pipeline stages, synced in real time with WhatsApp and the visit scheduling system. A chain of LLMs reads the real WhatsApp conversations, qualifies each lead, pulls out commercial data and flags the objections and competitors the family mentioned. Structured extraction only stores what the conversation says explicitly, so the model has less room to invent data.</p>
-        <p>These screens come from a demo build: the same code and the same detection jobs, run against 380 fictional leads. The brand "Luminova" is made up; the production system and its data stay private.</p>
+        <p>I built the CRM from scratch: more than 11,000 leads across 8 pipeline stages, synced in real time with WhatsApp and the visit scheduling system. A chain of LLMs reads each WhatsApp conversation, qualifies the lead, pulls out commercial data and flags the objections and competitors the family mentioned. Structured extraction only stores what the conversation says explicitly, so the model has less room to invent data.</p>
       </div>
 
-      <div class="gallery reveal" data-gallery>
-        <div class="tabs" role="tablist" aria-label="CRM screens">
-          <button role="tab" aria-selected="true">Pipeline</button>
-          <button role="tab" aria-selected="false">Lead detail</button>
-          <button role="tab" aria-selected="false">Action Center</button>
+      <div>
+        <div class="mock" id="crmMock">
+          <div class="mock-bar"><span class="dots"><i></i><i></i><i></i></span><span class="note">enrollment pipeline · fictional leads</span></div>
+          <div class="crm">
+            <div class="board" id="board"></div>
+            <aside class="ai">
+              <div class="ai-head"><b id="aiTitle">Conversation</b><button class="replay" id="replay" type="button">Replay</button></div>
+              <div class="chat" id="chat" aria-live="polite"></div>
+              <div class="extract">
+                <div class="ttl"><span class="small">Extracted by the model</span><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="18"/><circle class="fg" id="ringFg" cx="23" cy="23" r="18"/></svg><span id="ringN">0</span></div></div>
+                <dl class="fields" id="fields"></dl>
+                <span class="verdict" id="verdict"></span>
+              </div>
+              <div class="toast" id="toast"><small>Action Center</small><span id="toastText"></span></div>
+            </aside>
+          </div>
         </div>
-        <div class="stage" tabindex="0" aria-label="Open screenshot full size">
-          <span class="bar"></span>
-          <img class="on" src="img/crm-pipeline.jpg" alt="Kanban pipeline with lead cards showing AI score and summary" data-cap="Each card carries the lead score and a one-line summary the model wrote from the conversation." loading="lazy">
-          <img src="img/crm-lead.jpg" alt="Lead detail drawer with quality score and AI assessment" data-cap="Lead detail: quality score and the model's read of what the family wants." loading="lazy">
-          <img src="img/crm-actions.jpg" alt="Action Center listing overdue tasks by severity" data-cap="Action Center: AI signals, stage, score and recency turned into the rep's next action." loading="lazy">
-          <p class="cap"></p>
-        </div>
+        <p class="mock-cap">Coded replica of the flow, with invented names and messages. In production the same steps run on real WhatsApp transcripts, with fallback across LLM providers.</p>
       </div>
 
-      <div class="sheet reveal">
+      <div class="sheet">
         <div>
-          <span class="label">What it does</span>
+          <h3>What it does</h3>
           <ul>
             <li>Automatic fallback across LLM providers, so one provider's outage does not stop qualification</li>
             <li>Scores each sales rep on 4 dimensions from the actual conversation transcripts</li>
+            <li>An Action Center that combines AI signals, stage, score and recency into the rep's next action</li>
             <li>Two LangChain WhatsApp agents in production: one reschedules visits, one follows up leads by funnel stage. They check the calendar and CRM live and hand the chat to a person when they can't answer</li>
             <li>Retries with backoff, distributed locks, health checks and CI/CD around the background jobs</li>
           </ul>
         </div>
         <div>
-          <span class="label">Numbers</span>
+          <h3>Numbers</h3>
           <div class="figures">
-            <div><b data-count="8">8</b><span>pipeline stages</span></div>
-            <div><b data-count="130" data-suffix="+">130+</b><span>backend tests</span></div>
+            <div><b>11,000+</b><span>leads in production</span></div>
+            <div><b>8</b><span>pipeline stages</span></div>
+            <div><b>130+</b><span>backend tests</span></div>
           </div>
-          <span class="label">Stack</span>
+          <h3>Stack</h3>
           <div class="tech"><span>Python</span><span>FastAPI</span><span>async PostgreSQL</span><span>SQLAlchemy</span><span>Celery</span><span>Redis</span><span>LangChain</span><span>Next.js</span><span>Tailwind</span></div>
         </div>
       </div>
@@ -277,21 +377,16 @@ dialog button { position: fixed; top: max(16px, env(safe-area-inset-top)); right
 
   <section class="project gutter" id="more">
     <div class="wrap">
-      <div class="phead reveal">
-        <span class="label">03 · Also public</span>
-        <h2>Code and write-ups</h2>
-      </div>
+      <div class="phead"><h2>Code and write-ups</h2></div>
       <div class="cards">
-        <a class="card reveal" href="https://github.com/hisdevotions-afk/enterprise-ai-harness-case" target="_blank" rel="noopener">
-          <span class="label">Agent governance</span>
+        <a class="card" href="https://github.com/hisdevotions-afk/enterprise-ai-harness-case" target="_blank" rel="noopener">
           <h3>Enterprise AI harness</h3>
           <p>Governing AI coding agents that touch production: a TypeScript MCP broker so agents use tools without seeing credentials, a policy engine, PII masking, an audit log and human approval for destructive actions.</p>
           <code>enterprise-ai-harness-case →</code>
         </a>
-        <a class="card reveal" href="https://github.com/hisdevotions-afk/studium" target="_blank" rel="noopener">
-          <span class="label">Chrome extension</span>
+        <a class="card" href="https://github.com/hisdevotions-afk/studium" target="_blank" rel="noopener">
           <h3>Studium</h3>
-          <p>Click a word in a Netflix subtitle and get its meaning in that scene. FastAPI backend, LLM in JSON mode, Pydantic validation and a timeout fallback.</p>
+          <p>A Chrome extension: click a word in a Netflix subtitle and get its meaning in that scene. FastAPI backend, LLM in JSON mode, Pydantic validation and a timeout fallback.</p>
           <code>studium →</code>
         </a>
       </div>
@@ -302,108 +397,431 @@ dialog button { position: fixed; top: max(16px, env(safe-area-inset-top)); right
 <footer class="gutter" id="contact">
   <div class="wrap">
     <span>Roberto Quirino da Silva Junior · AI Engineer</span>
-    <span><a href="https://www.linkedin.com/in/roberto-quirino" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/hisdevotions-afk" target="_blank" rel="noopener">GitHub</a> · Happy to walk through the CRM live on a call.</span>
+    <span><a href="https://www.linkedin.com/in/roberto-quirino" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/hisdevotions-afk" target="_blank" rel="noopener">GitHub</a> · Happy to walk through both systems on a call.</span>
   </div>
 </footer>
-
-<dialog id="lb"><button type="button" id="lbClose">Close ✕</button><img id="lbImg" src="img/atlas-brazil.jpg" alt="Screenshot, full size"></dialog>
 
 <script>
 document.documentElement.classList.add('js');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-/* scroll progress + nav state + active section */
-const bar = document.getElementById('progress'), nav = document.getElementById('nav');
-const links = [...document.querySelectorAll('.navlinks a')];
-const secs = links.map(a => document.querySelector(a.getAttribute('href')));
-function onScroll() {
-  const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
-  bar.style.transform = `scaleX(${max > 0 ? h.scrollTop / max : 0})`;
-  nav.classList.toggle('scrolled', h.scrollTop > 8);
-  let cur = -1;
-  secs.forEach((s, i) => { if (s && s.getBoundingClientRect().top < innerHeight * 0.4) cur = i; });
-  links.forEach((a, i) => a.classList.toggle('active', i === cur));
+/* run a loop only while its element is on screen and the tab is visible */
+function whenVisible(el, onChange) {
+  let seen = false;
+  const fire = () => onChange(seen && !document.hidden);
+  new IntersectionObserver(es => { seen = es[0].isIntersecting; fire(); }, { threshold: 0.25 }).observe(el);
+  document.addEventListener('visibilitychange', fire);
 }
-addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
-/* reveal on scroll */
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-/* count-up */
-const fmt = n => n.toLocaleString('en-US');
-const cio = new IntersectionObserver(es => es.forEach(e => {
-  if (!e.isIntersecting) return; cio.unobserve(e.target);
-  const el = e.target, end = +el.dataset.count, suf = el.dataset.suffix || '';
-  if (reduce) return;
-  const t0 = performance.now(), dur = 1400;
-  (function step(t) { const p = Math.min(1, (t - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - p, 3)));
-    el.textContent = fmt(v) + suf; if (p < 1) requestAnimationFrame(step); })(t0);
-}), { threshold: 0.6 });
-document.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
-
-/* galleries: tabs + autoplay while visible */
-const lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg');
-document.getElementById('lbClose').onclick = () => lb.close();
-lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
-document.querySelectorAll('[data-gallery]').forEach(g => {
-  const tabs = [...g.querySelectorAll('[role=tab]')], imgs = [...g.querySelectorAll('.stage img')];
-  const stage = g.querySelector('.stage'), cap = g.querySelector('.cap'), pbar = g.querySelector('.bar');
-  let i = 0, timer = null, visible = false, touched = false;
-  function show(n) {
-    i = (n + imgs.length) % imgs.length;
-    imgs.forEach((im, k) => im.classList.toggle('on', k === i));
-    tabs.forEach((t, k) => t.setAttribute('aria-selected', k === i));
-    cap.textContent = imgs[i].dataset.cap;
-    restart();
+/* nav: progress + active section */
+(() => {
+  const bar = document.getElementById('progress'), nav = document.getElementById('nav');
+  const links = [...document.querySelectorAll('.navlinks a')];
+  const secs = links.map(a => document.querySelector(a.getAttribute('href')));
+  function onScroll() {
+    const h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    bar.style.transform = `scaleX(${max > 0 ? h.scrollTop / max : 0})`;
+    nav.classList.toggle('scrolled', h.scrollTop > 8);
+    let cur = -1;
+    secs.forEach((s, i) => { if (s && s.getBoundingClientRect().top < innerHeight * 0.4) cur = i; });
+    links.forEach((a, i) => a.classList.toggle('active', i === cur));
   }
-  function restart() {
-    clearTimeout(timer); stage.classList.remove('playing'); void pbar.offsetWidth;
-    if (reduce || touched || !visible || imgs.length < 2) return;
-    stage.classList.add('playing'); timer = setTimeout(() => show(i + 1), 6000);
-  }
-  tabs.forEach((t, k) => t.addEventListener('click', () => { touched = true; show(k); }));
-  const open = () => { lbImg.src = imgs[i].src; lbImg.alt = imgs[i].alt; lb.showModal(); };
-  stage.addEventListener('click', open);
-  stage.addEventListener('keydown', e => {
-    if (e.key === 'Enter') open();
-    if (e.key === 'ArrowRight') { touched = true; show(i + 1); }
-    if (e.key === 'ArrowLeft') { touched = true; show(i - 1); }
-  });
-  new IntersectionObserver(es => { visible = es[0].isIntersecting; restart(); }, { threshold: 0.4 }).observe(stage);
-  show(0);
-});
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+})();
 
-/* hero: drifting H3-style hex field, brighter cells pulse like a heat map */
+/* hex geometry shared by hero and Atlas */
+function hexPath(ctx, x, y, r) {
+  ctx.beginPath();
+  for (let k = 0; k < 6; k++) { const a = Math.PI / 3 * k + Math.PI / 6; ctx[k ? 'lineTo' : 'moveTo'](x + r * Math.cos(a), y + r * Math.sin(a)); }
+  ctx.closePath();
+}
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => 1 - Math.pow(1 - t, 4);
+function hexToRgb(h) { h = h.replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join(''); const n = parseInt(h, 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function mix(c1, c2, t) { return `rgb(${c1.map((v, i) => Math.round(lerp(v, c2[i], t))).join(',')})`; }
+
+/* hero hex field */
 (() => {
   const c = document.getElementById('hex'), ctx = c.getContext('2d');
-  let w, h, cells = [], dpr = Math.min(devicePixelRatio || 1, 2);
-  const R = 22;
+  let w, h, cells = [], run = false, raf;
+  const R = 22, dpr = Math.min(devicePixelRatio || 1, 2);
   function build() {
     const r = c.getBoundingClientRect(); w = r.width; h = r.height;
     c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     cells = []; const dx = R * Math.sqrt(3), dy = R * 1.5;
-    for (let row = -1; row * dy < h + R; row++)
-      for (let col = -1; col * dx < w + R; col++) {
-        const x = col * dx + (row % 2 ? dx / 2 : 0), y = row * dy;
-        const heat = Math.max(0, 1 - Math.hypot((x - w * .78) / (w * .45), (y - h * .45) / (h * .9)));
-        cells.push({ x, y, heat, ph: Math.random() * 6.28 });
-      }
+    for (let row = -1; row * dy < h + R; row++) for (let col = -1; col * dx < w + R; col++) {
+      const x = col * dx + (row % 2 ? dx / 2 : 0), y = row * dy;
+      cells.push({ x, y, heat: Math.max(0, 1 - Math.hypot((x - w * .78) / (w * .45), (y - h * .45) / (h * .9))), ph: Math.random() * 6.28 });
+    }
+    draw(performance.now());
   }
-  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-  const line = getComputedStyle(document.documentElement).getPropertyValue('--line').trim();
-  function hex(x, y, r) { ctx.beginPath(); for (let k = 0; k < 6; k++) { const a = Math.PI / 3 * k + Math.PI / 6; ctx[k ? 'lineTo' : 'moveTo'](x + r * Math.cos(a), y + r * Math.sin(a)); } ctx.closePath(); }
   function draw(t) {
+    const accent = css('--accent'), line = css('--line');
     ctx.clearRect(0, 0, w, h);
     for (const p of cells) {
-      hex(p.x, p.y, R - 1.5);
-      ctx.strokeStyle = line; ctx.lineWidth = 1; ctx.stroke();
+      hexPath(ctx, p.x, p.y, R - 1.5); ctx.strokeStyle = line; ctx.lineWidth = 1; ctx.stroke();
       const a = p.heat * (0.35 + 0.35 * Math.sin(t / 1400 + p.ph));
       if (a > 0.05) { ctx.globalAlpha = a; ctx.fillStyle = accent; ctx.fill(); ctx.globalAlpha = 1; }
     }
-    if (!reduce) requestAnimationFrame(draw);
+    if (run) raf = requestAnimationFrame(draw);
   }
-  build(); addEventListener('resize', build); requestAnimationFrame(draw);
+  build(); addEventListener('resize', build);
+  if (!reduce) whenVisible(c, v => { run = v; cancelAnimationFrame(raf); if (v) raf = requestAnimationFrame(draw); });
+})();
+
+/* ================= ATLAS MOCK ================= */
+(() => {
+  const canvas = document.getElementById('atlasCanvas'), box = document.getElementById('atlasMap'), ctx = canvas.getContext('2d');
+  const tip = document.getElementById('tip'), ficha = document.getElementById('ficha'), rankEl = document.getElementById('rank');
+  const seg = document.getElementById('seg');
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+
+  // fictional neighborhoods (normalized positions inside the city)
+  const HOODS = [
+    { name: 'Vila Aurora', x: .62, y: .34 }, { name: 'Jardim Norte', x: .42, y: .22 },
+    { name: 'Alto do Rio', x: .74, y: .62 }, { name: 'Parque das Águas', x: .30, y: .58 },
+    { name: 'Centro Velho', x: .50, y: .48 }, { name: 'Bela Vista Sul', x: .52, y: .78 },
+    { name: 'Morro Azul', x: .20, y: .36 }
+  ];
+  const UNITS = [{ x: .47, y: .52 }, { x: .30, y: .64 }, { x: .56, y: .80 }];
+  const HOT = {
+    res: [{ x: .62, y: .32, s: .14, w: 1 }, { x: .76, y: .64, s: .12, w: .8 }, { x: .40, y: .20, s: .10, w: .55 }],
+    corp: [{ x: .50, y: .47, s: .11, w: 1 }, { x: .62, y: .36, s: .09, w: .6 }, { x: .30, y: .58, s: .10, w: .45 }]
+  };
+  const PANEL = {
+    res: { title: 'Residential potential', rank: 'Neighborhoods · A/B households', unit: 'A/B households', k: 41 },
+    corp: { title: 'Corporate potential', rank: 'Neighborhoods · formal jobs', unit: 'formal jobs', k: 168 }
+  };
+  // what Atlas shows: facts from the census, estimates labeled, failed predictions withheld
+  const R2 = [0.31, 0.14, 0.27, 0.12, 0.22, 0.09, 0.18];
+
+  let isoT = 1e12, W, H, R, cells = [], mode = 'res', sel = 0, t0 = 0, sweep = 0, iso = 0, hover = -1, running = false, raf, auto = !reduce, autoTimer;
+
+  function blob(theta) { return 1 + .12 * Math.sin(3 * theta + 1) + .08 * Math.sin(5 * theta + 2.2) + .05 * Math.sin(7 * theta + .4); }
+  function inside(nx, ny) { const dx = nx - .5, dy = (ny - .5) * 1.05, th = Math.atan2(dy, dx); return Math.hypot(dx, dy) < .40 * blob(th); }
+  function scoreAt(nx, ny, m) { return HOT[m].reduce((s, g) => s + g.w * Math.exp(-((nx - g.x) ** 2 + (ny - g.y) ** 2) / (2 * g.s * g.s)), 0); }
+
+  function build() {
+    const r = box.getBoundingClientRect(); W = r.width; H = r.height;
+    canvas.width = W * dpr; canvas.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    R = Math.max(7, Math.min(W, H) / 46);
+    const dx = R * Math.sqrt(3), dy = R * 1.5, S = Math.min(W, H * 1.25);
+    const ox = (W - S) / 2 - (W > 700 ? W * 0.14 : 0), oy = (H - S / 1.25) / 2;
+    cells = [];
+    for (let row = 0; row * dy < H + R; row++) for (let col = 0; col * dx < W + R; col++) {
+      const x = col * dx + (row % 2 ? dx / 2 : 0), y = row * dy;
+      const nx = (x - ox) / S, ny = (y - oy) / (S / 1.25);
+      if (!inside(nx, ny)) continue;
+      let best = 0, bd = 9;
+      HOODS.forEach((h, i) => { const d = (nx - h.x) ** 2 + (ny - h.y) ** 2; if (d < bd) { bd = d; best = i; } });
+      cells.push({ x, y, nx, ny, hood: best, d: Math.hypot(nx - .5, ny - .5), s: { res: scoreAt(nx, ny, 'res'), corp: scoreAt(nx, ny, 'corp') }, cur: 0, from: 0, to: 0 });
+    }
+    for (const m of ['res', 'corp']) {
+      const max = Math.max(...cells.map(c => c.s[m]));
+      cells.forEach(c => c.s[m] /= max);
+      const sorted = cells.map(c => c.s[m]).sort((a, b) => a - b);
+      cells.thr = cells.thr || {}; cells.thr[m] = sorted[Math.floor(sorted.length * .62)];
+    }
+    cells.forEach(c => { c.cur = c.from = c.to = c.s[mode]; });
+    S_ = S; OX = ox; OY = oy;
+  }
+  let S_, OX, OY;
+  const toPx = (nx, ny) => [OX + nx * S_, OY + ny * S_ / 1.25];
+
+  function hoodStats(m) {
+    return HOODS.map((h, i) => {
+      const cs = cells.filter(c => c.hood === i);
+      const mean = cs.reduce((a, c) => a + c.s[m], 0) / Math.max(1, cs.length);
+      return { i, name: h.name, score: Math.round(mean * 100), value: Math.round(mean * cs.length * PANEL[m].k) * 10, n: cs.length };
+    }).sort((a, b) => b.value - a.value);
+  }
+
+  // ranking with FLIP reorder
+  function renderRank(animate) {
+    const st = hoodStats(mode), max = st[0].value;
+    const first = new Map([...rankEl.children].map(li => [li.dataset.i, li.getBoundingClientRect().top]));
+    const existing = new Map([...rankEl.children].map(li => [li.dataset.i, li]));
+    st.forEach((h, k) => {
+      let li = existing.get(String(h.i));
+      if (!li) {
+        li = document.createElement('li'); li.dataset.i = h.i; li.tabIndex = 0;
+        li.innerHTML = '<span class="n"></span><span class="nm"></span><span class="v"></span><span class="track"><b></b></span>';
+        li.addEventListener('click', () => { stopAuto(); select(+li.dataset.i); });
+        li.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); stopAuto(); select(+li.dataset.i); } });
+      }
+      li.querySelector('.n').textContent = k + 1;
+      li.querySelector('.nm').textContent = h.name;
+      li.querySelector('.v').textContent = h.value.toLocaleString('en-US');
+      li.querySelector('.track b').style.transform = `scaleX(${h.value / max})`;
+      li.classList.toggle('sel', h.i === sel);
+      rankEl.appendChild(li);
+    });
+    if (!animate || reduce) return;
+    [...rankEl.children].forEach(li => {
+      const a = first.get(li.dataset.i); if (a == null) return;
+      const d = a - li.getBoundingClientRect().top; if (!d) return;
+      li.animate([{ transform: `translateY(${d}px)` }, { transform: 'none' }], { duration: 650, easing: 'cubic-bezier(.16,1,.3,1)' });
+    });
+    return st;
+  }
+
+  function renderFicha() {
+    const st = hoodStats(mode), h = st.find(x => x.i === sel), pos = st.indexOf(h) + 1, r2 = R2[sel];
+    const kids = 38 + (sel * 7) % 17, apt = 22 + (sel * 13) % 41;
+    ficha.innerHTML = `
+      <div class="top"><div><h3>${h.name}</h3><span class="small">#${pos} of ${st.length} in the city</span></div><span class="score">${h.score}</span></div>
+      <dl>
+        <div class="row"><dt>${PANEL[mode].unit}</dt><dd>${h.value.toLocaleString('en-US')} <span class="tag fact">fact · census</span></dd></div>
+        <div class="row"><dt>Families with children</dt><dd>${kids}% <span class="tag fact">fact · census</span></dd></div>
+        <div class="row"><dt>Apartments</dt><dd>${apt}% <span class="tag fact">fact · census</span></dd></div>
+        <div class="row"><dt>Overlap with nearest unit</dt><dd>${(8 + sel * 3) % 19}% <span class="tag est">estimate</span></dd></div>
+      </dl>
+      <div class="withheld">${r2 >= .2
+        ? `Expected visits / year: <b>${120 + sel * 23}</b> <span class="tag est">estimate · LOO R² ${r2.toFixed(2)}</span>`
+        : `Expected visits / year: <s>hidden</s>. The model scored LOO R² ${r2.toFixed(2)}, below the 0.20 bar, so Atlas shows no prediction.`}</div>`;
+  }
+
+  function color(c, alpha) {
+    const thr = cells.thr[mode];
+    if (c.cur < thr) return css('--hex-cold');
+    const t = (c.cur - thr) / (1 - thr);
+    const a = hexToRgb(css('--heat-a')), b = hexToRgb(css('--heat-b')), cc = hexToRgb(css('--heat-c'));
+    return t < .5 ? mix(a, b, t * 2) : mix(b, cc, (t - .5) * 2);
+  }
+
+  function frame(now) {
+    const el = now - t0;
+    sweep = reduce ? 1 : Math.max(0, Math.min(1, el / 1600));
+    iso = reduce ? 1 : Math.max(0, Math.min(1, (now - isoT) / 900));
+    const mt = reduce ? 1 : Math.min(1, (now - modeT) / 900);
+    ctx.clearRect(0, 0, W, H);
+    const edge = css('--hex-edge');
+    for (const c of cells) {
+      const wave = Math.max(0, Math.min(1, (mt * 1.4 - c.d * 1.2)));
+      c.cur = lerp(c.from, c.to, ease(wave));
+      const reveal = Math.max(0, Math.min(1, (sweep * 0.62 - c.d) / 0.06));
+      if (reveal <= 0) continue;
+      const r = (R - 0.6) * (0.55 + 0.45 * ease(reveal));
+      hexPath(ctx, c.x, c.y, r);
+      ctx.globalAlpha = reveal * (hover >= 0 && cells[hover].hood !== c.hood ? .55 : 1);
+      ctx.fillStyle = color(c); ctx.fill();
+      ctx.lineWidth = c.hood === sel ? 1.6 : .8; ctx.strokeStyle = c.hood === sel ? css('--ink') : edge; ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    // survey ring
+    if (sweep > 0 && sweep < 1) {
+      const [cx, cy] = toPx(.5, .5);
+      ctx.beginPath(); ctx.arc(cx, cy, sweep * .62 * S_, 0, Math.PI * 2);
+      ctx.strokeStyle = css('--accent'); ctx.globalAlpha = 1 - sweep; ctx.lineWidth = 2; ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    // existing units
+    for (const u of UNITS) {
+      const [x, y] = toPx(u.x, u.y);
+      hexPath(ctx, x, y, R * .95); ctx.fillStyle = css('--ink'); ctx.globalAlpha = sweep; ctx.fill();
+      hexPath(ctx, x, y, R * .45); ctx.fillStyle = css('--accent'); ctx.fill(); ctx.globalAlpha = 1;
+    }
+    // 15-min isochrone around the selected neighborhood
+    if (iso > 0) {
+      const h = HOODS[sel], [cx, cy] = toPx(h.x, h.y), rr = S_ * .15 * ease(iso);
+      ctx.beginPath();
+      for (let k = 0; k <= 48; k++) {
+        const th = k / 48 * Math.PI * 2, f = 1 + .18 * Math.sin(3 * th + sel) + .1 * Math.sin(5 * th + 1);
+        ctx[k ? 'lineTo' : 'moveTo'](cx + Math.cos(th) * rr * f, cy + Math.sin(th) * rr * f * .9);
+      }
+      ctx.setLineDash([5, 5]); ctx.lineDashOffset = -now / 60; ctx.strokeStyle = css('--ink'); ctx.lineWidth = 1.5; ctx.globalAlpha = .9 * iso; ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = iso;
+      ctx.font = '600 11px "IBM Plex Mono", monospace'; ctx.fillStyle = css('--ink');
+      ctx.fillText('15 min drive', cx + rr * .55, cy - rr * .95); ctx.globalAlpha = 1;
+    }
+    // labels
+    ctx.font = '600 12px "IBM Plex Sans", sans-serif'; ctx.textAlign = 'center';
+    HOODS.forEach((h, i) => {
+      const [x, y] = toPx(h.x, h.y); ctx.globalAlpha = Math.max(0, (sweep - .5) * 2) * (i === sel ? 1 : .8);
+      ctx.lineWidth = 3; ctx.strokeStyle = css('--surface-2'); ctx.strokeText(h.name, x, y + 4);
+      ctx.fillStyle = css('--ink'); ctx.fillText(h.name, x, y + 4);
+    });
+    ctx.globalAlpha = 1; ctx.textAlign = 'start';
+    if (iso >= 1 && ficha.classList.contains('hide')) ficha.classList.remove('hide');
+    if (running && !reduce) raf = requestAnimationFrame(frame);
+  }
+
+  let modeT = -1e9;
+  function setMode(m, user) {
+    if (m === mode) return;
+    if (user) stopAuto();
+    cells.forEach(c => { c.from = c.cur; c.to = c.s[m]; });
+    mode = m; modeT = performance.now();
+    seg.dataset.mode = m;
+    seg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
+    document.getElementById('legendTitle').textContent = PANEL[m].title;
+    document.getElementById('rankTitle').textContent = PANEL[m].rank;
+    renderRank(true);
+    select(hoodStats(m)[0].i);
+    kick();
+  }
+  function select(i) {
+    sel = i;
+    [...rankEl.children].forEach(li => li.classList.toggle('sel', +li.dataset.i === i));
+    renderFicha();
+    if (started && !reduce) { ficha.classList.add('hide'); isoT = Math.max(performance.now(), t0 + 1300); }
+    kick();
+  }
+  function kick() { if (reduce || !running) { frame(performance.now() + 1e5); } }
+
+  function stopAuto() { auto = false; clearInterval(autoTimer); }
+  function startAuto() { clearInterval(autoTimer); if (!auto) return; autoTimer = setInterval(() => setMode(mode === 'res' ? 'corp' : 'res'), 7000); }
+
+  seg.addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMode(b.dataset.mode, true); });
+  canvas.addEventListener('pointermove', e => {
+    const r = canvas.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    let best = -1, bd = R * R * 1.2;
+    cells.forEach((c, k) => { const d = (c.x - x) ** 2 + (c.y - y) ** 2; if (d < bd) { bd = d; best = k; } });
+    hover = best;
+    if (best >= 0) {
+      const c = cells[best]; tip.classList.add('on'); tip.style.left = c.x + 'px'; tip.style.top = c.y + 'px';
+      tip.textContent = `${HOODS[c.hood].name} · ${Math.round(c.cur * 100)}`;
+    } else tip.classList.remove('on');
+    kick();
+  });
+  canvas.addEventListener('pointerleave', () => { hover = -1; tip.classList.remove('on'); kick(); });
+  canvas.addEventListener('click', () => { if (hover >= 0) { stopAuto(); select(cells[hover].hood); } });
+
+  let started = false;
+  build(); renderRank(false); select(hoodStats(mode)[0].i);
+  if (reduce) { t0 = -1e9; isoT = -1e9; } else t0 = performance.now() + 1e9; // wait until visible
+  addEventListener('resize', () => { build(); kick(); });
+  whenVisible(document.getElementById('atlasMock'), v => {
+    running = v; cancelAnimationFrame(raf); clearInterval(autoTimer);
+    if (!v) return;
+    if (!started) { started = true; t0 = performance.now(); isoT = t0 + 1300; ficha.classList.add('hide'); }
+    startAuto();
+    if (reduce) frame(performance.now()); else raf = requestAnimationFrame(frame);
+  });
+  if (reduce) frame(performance.now());
+})();
+
+/* ================= CRM MOCK ================= */
+(() => {
+  const board = document.getElementById('board'), chat = document.getElementById('chat'), fieldsEl = document.getElementById('fields');
+  const verdict = document.getElementById('verdict'), ringFg = document.getElementById('ringFg'), ringN = document.getElementById('ringN');
+  const toast = document.getElementById('toast'), toastText = document.getElementById('toastText'), aiTitle = document.getElementById('aiTitle');
+
+  const COLS = [['new', 'New lead'], ['talk', 'In conversation'], ['qual', 'Qualified'], ['visit', 'Visit booked']];
+  const BASE = [
+    ['new', 'Rafael Nunes', 'Lia, 2y', 'Instagram', 12], ['new', 'Bia Santos', 'Caio, 4y', 'Google', 8],
+    ['talk', 'Paulo Mendes', 'Nina, 1y', 'Site', 0], ['talk', 'Marina Costa', 'Theo, 3y', 'WhatsApp', 0], ['talk', 'Igor Teles', 'Davi, 5y', 'Google', 41],
+    ['qual', 'Carla Dias', 'Sofia, 2y', 'Instagram', 72], ['qual', 'Júlia Prado', 'Leo, 3y', 'Site', 66],
+    ['visit', 'Ana Ribeiro', 'Luca, 4y', 'WhatsApp', 84]
+  ];
+  const STORIES = [
+    { who: 'Marina Costa', score: 78, move: 'qual',
+      chat: [
+        ['in', 'Hi! Do you have a <mark>full-day</mark> spot for Theo? He turns 3 in March.'],
+        ['out', 'We do, in the morning group starting February. Would you like to visit?'],
+        ['in', '<mark>Escola Horizonte</mark> quoted us <mark>less</mark>, so I am still comparing.'],
+        ['in', 'Could we come <mark>Saturday morning</mark>?']],
+      fields: [['Child', 'Theo, 3 in March'], ['Interest', 'Full-day, February start'], ['Objection', 'Price'], ['Competitor', 'Escola Horizonte'], ['Visit', 'Asked for Saturday morning'], ['Budget', null]],
+      verdict: ['sql', 'Qualified · SQL'], toast: 'Book Marina’s Saturday visit. She is comparing with Escola Horizonte on price.' },
+    { who: 'Paulo Mendes', score: 34, move: null,
+      chat: [
+        ['in', 'Hello, how much is it for <mark>next year</mark>?'],
+        ['out', 'Here is the 2027 table. Which age group is Nina in?'],
+        ['in', 'Thanks, I’ll take a look.']],
+      fields: [['Child', 'Nina (age from the form)'], ['Interest', 'Next school year'], ['Objection', null], ['Competitor', null], ['Visit', null], ['Budget', null]],
+      verdict: ['nq', 'Not qualified yet'], toast: 'Paulo hasn’t replied in 3 days. Suggested: ask about Nina’s age group and offer a visit.' }
+  ];
+
+  let cardEls = {};
+  function card(d) {
+    const [col, name, kid, src, sc] = d;
+    const el = document.createElement('div'); el.className = 'lead'; el.dataset.name = name;
+    el.innerHTML = `<div class="row1"><b>${name}</b><span class="sc${sc >= 70 ? ' hot' : ''}">${sc || '—'}</span></div><span class="sub">${kid}</span><span class="src">${src}</span>`;
+    return el;
+  }
+  function renderBoard() {
+    board.innerHTML = ''; cardEls = {};
+    COLS.forEach(([id, label]) => {
+      const col = document.createElement('div'); col.className = 'col'; col.dataset.col = id;
+      col.innerHTML = `<h4>${label}<span>0</span></h4><div class="stack"></div>`;
+      board.appendChild(col);
+    });
+    BASE.forEach(d => { const el = card(d); cardEls[d[1]] = el; board.querySelector(`[data-col="${d[0]}"] .stack`).appendChild(el); });
+    counts();
+  }
+  function counts() { board.querySelectorAll('.col').forEach(c => c.querySelector('h4 span').textContent = c.querySelectorAll('.lead').length); }
+  function moveCard(el, colId) {
+    const a = el.getBoundingClientRect();
+    board.querySelector(`[data-col="${colId}"] .stack`).prepend(el);
+    const b = el.getBoundingClientRect(); counts();
+    if (reduce) return;
+    el.animate([{ transform: `translate(${a.left - b.left}px, ${a.top - b.top}px) rotate(-2deg) scale(1.04)` }, { transform: 'none' }], { duration: 750, easing: 'cubic-bezier(.16,1,.3,1)' });
+  }
+  function setRing(v) {
+    ringFg.style.strokeDashoffset = 113.1 * (1 - v / 100);
+    ringFg.style.stroke = v >= 70 ? css('--accent') : css('--warn');
+    const start = +ringN.textContent || 0, t0 = performance.now();
+    (function step(t) { const p = reduce ? 1 : Math.max(0, Math.min(1, (t - t0) / 1000)); ringN.textContent = Math.round(lerp(start, v, ease(p))); if (p < 1) requestAnimationFrame(step); })(t0);
+  }
+  function resetPanel(story) {
+    chat.innerHTML = ''; verdict.className = 'verdict'; toast.classList.remove('on'); setRing(0);
+    aiTitle.textContent = story.who;
+    fieldsEl.innerHTML = story.fields.map(([k]) => `<div class="field"><dt>${k}</dt><dd></dd></div>`).join('');
+  }
+
+  let gen = 0, visible = false, waiters = [];
+  const gate = () => visible ? Promise.resolve() : new Promise(r => waiters.push(r));
+  async function step(ms, my) { await sleep(reduce ? 0 : ms); await gate(); if (my !== gen) throw 'stop'; }
+
+  async function play(story, my) {
+    resetPanel(story);
+    const el = cardEls[story.who];
+    Object.values(cardEls).forEach(c => c.classList.remove('active', 'reading'));
+    el.classList.add('active', 'reading');
+    for (const [dir, text] of story.chat) {
+      const t = document.createElement('div'); t.className = 'msg' + (dir === 'out' ? ' out' : ''); t.innerHTML = '<span class="typing"><i></i><i></i><i></i></span>';
+      t.style.padding = '0'; chat.appendChild(t); await step(700, my);
+      t.style.padding = ''; t.innerHTML = text; await step(900, my);
+    }
+    el.classList.remove('reading');
+    const rows = [...fieldsEl.children];
+    for (let k = 0; k < story.fields.length; k++) {
+      const v = story.fields[k][1], row = rows[k];
+      row.classList.add('on');
+      if (v == null) { row.classList.add('null'); row.querySelector('dd').innerHTML = '<s>not mentioned</s> · not stored'; }
+      else { const dd = row.querySelector('dd'); for (let n = 1; n <= v.length; n++) { dd.textContent = v.slice(0, n); if (!reduce && n % 2 === 0) await sleep(18); } }
+      await step(260, my);
+    }
+    setRing(story.score);
+    el.querySelector('.sc').textContent = story.score; el.querySelector('.sc').classList.toggle('hot', story.score >= 70);
+    await step(700, my);
+    verdict.textContent = story.verdict[1]; verdict.className = 'verdict on ' + story.verdict[0];
+    await step(600, my);
+    if (story.move) moveCard(el, story.move);
+    await step(700, my);
+    toastText.textContent = story.toast; toast.classList.add('on');
+    await step(3600, my);
+    toast.classList.remove('on');
+    await step(500, my);
+  }
+  async function loop() {
+    const my = ++gen;
+    try {
+      while (true) {
+        renderBoard();
+        for (const s of STORIES) await play(s, my);
+        if (reduce) return;
+        await step(800, my);
+      }
+    } catch (e) { if (e !== 'stop') throw e; }
+  }
+  document.getElementById('replay').addEventListener('click', () => { loop(); });
+  whenVisible(document.getElementById('crmMock'), v => {
+    visible = v;
+    if (v) { waiters.splice(0).forEach(r => r()); if (!gen) loop(); }
+  });
+  renderBoard(); resetPanel(STORIES[0]);
 })();
 </script>
 </body>

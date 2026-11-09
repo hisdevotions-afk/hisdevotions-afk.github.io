@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "buried-raster",
+        "value": "*",
+        "files": [
+          "hisdevotions-afk.github.io/index.html"
+        ],
+        "createdAt": "2026-11-09T20:21:04.650Z",
+        "reason": "Claude: gallery crossfade; inactive slides sit at opacity 0 and the active one is fully visible"
+      }
+    ]
+  }
+}
