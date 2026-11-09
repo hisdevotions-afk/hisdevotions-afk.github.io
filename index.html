@@ -69,8 +69,6 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 .btn:hover { transform: translateY(-2px); border-color: var(--accent); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--on-accent); position: relative; }
-.pulse::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--on-accent); animation: ping 1.8s var(--ease) infinite; }
-@keyframes ping { from { transform: scale(.6); opacity: .9 } to { transform: scale(1.8); opacity: 0 } }
 
 /* project sections */
 section.project { padding-block: 104px 16px; }
