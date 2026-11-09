@@ -14,7 +14,7 @@
 <style>
 :root {
   --bg: #0b1019; --surface: #121a27; --ink: #e9edf3; --muted: #97a1b2; --line: #222d3f;
-  --accent: #f07a45; --accent-2: #ffc35a; --chip: #1a2333; --ok: #39c47e;
+  --on-accent: #1a0c04; --accent: #f07a45; --accent-2: #ffc35a; --chip: #1a2333; --ok: #39c47e;
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -23,7 +23,7 @@
 }
 @media (prefers-color-scheme: light) {
   :root { --bg: #f5f6f8; --surface: #fff; --ink: #131923; --muted: #5a6374; --line: #dce0e7;
-    --accent: #b8430f; --accent-2: #e09a1a; --chip: #eceff3; --ok: #17703f; color-scheme: light; }
+    --on-accent: #fff; --accent: #b8430f; --accent-2: #e09a1a; --chip: #eceff3; --ok: #17703f; color-scheme: light; }
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 80px; }
@@ -60,9 +60,9 @@ nav.top .wrap { display: flex; align-items: center; justify-content: space-betwe
 .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
 .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 10px; font: 600 15px/1 var(--body); text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); transition: transform .25s var(--ease), border-color .25s, box-shadow .25s; }
 .btn:hover { transform: translateY(-2px); border-color: var(--accent); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #1a0c04; }
-.pulse { width: 8px; height: 8px; border-radius: 50%; background: #1a0c04; position: relative; }
-.pulse::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid #1a0c04; animation: ping 1.8s var(--ease) infinite; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--on-accent); position: relative; }
+.pulse::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--on-accent); animation: ping 1.8s var(--ease) infinite; }
 @keyframes ping { from { transform: scale(.6); opacity: .9 } to { transform: scale(1.8); opacity: 0 } }
 .hero .facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 18px; }
 .hero .facts div { display: grid; }
